@@ -20,6 +20,7 @@
  
 The arctanh capacity is provided by Michael Thomas Flanagan's Java Scientific Library:
    Dr Michael Thomas Flanagan
+   www.ee.ucl.ac.uk/~mflanaga
    Department of Electronic and Electrical Engineering
    UCL (University College London)
    Torrington Place
@@ -58,7 +59,7 @@ public class LatLongToUTM {
     private static final BigDecimal southHemisphereSubtraction = new BigDecimal(10000000);
     private static final BigDecimal one = new BigDecimal(1);
     private static final BigDecimal two = new BigDecimal(2);
-    private static final int numOfDecimals = 3;
+    private static final int numOfDecimals = 10;
     
     public static UTM convert(double latitude, double longitude, String datumName) {
         

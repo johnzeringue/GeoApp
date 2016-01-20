@@ -47,8 +47,7 @@ public class LatLongToUTMTest {
         double latitude = 70.57927709;
         double longitude = 45.59941973;
         String datumName = "WGS84";
-        UTM expResult = new UTM(new BigDecimal(1548706.792), new BigDecimal(
-                8451449.199), );
+        UTM expResult = null;
         UTM result = LatLongToUTM.convert(latitude, longitude, datumName);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
