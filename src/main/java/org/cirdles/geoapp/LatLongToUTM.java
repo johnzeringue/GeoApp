@@ -328,7 +328,7 @@ public class LatLongToUTM {
     public static void main(String[] args) {
         
         BigDecimal latitude = new BigDecimal(77);
-        BigDecimal longitude = new BigDecimal(53.4);
+        BigDecimal longitude = new BigDecimal(-120);
         
         UTM utm = LatLongToUTM.convert(latitude, longitude, "WGS84");
         System.out.println("Northing: " + utm.getNorthing());
