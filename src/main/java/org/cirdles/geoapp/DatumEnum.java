@@ -19,11 +19,6 @@
  */
 package org.cirdles.geoapp;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import static java.math.RoundingMode.UNNECESSARY;
-import org.nd4j.linalg.util.BigDecimalMath;
-
 /**
  *
  * @author Elaina Cole
@@ -59,7 +54,6 @@ public enum DatumEnum {
     private double flattening3D;
     private double eccentricity;
     
-    private static final RoundingMode roundMode = UNNECESSARY;
     
     private DatumEnum(String datum, double equatorialRadius, double polarRadius,
             double flattening3D, double eccentricity, double meridianRadius){
