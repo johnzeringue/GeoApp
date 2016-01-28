@@ -64,62 +64,62 @@ public class LatLongToUTM {
         
         BigDecimal latitudeRadians = latitude.abs().multiply(
                 new BigDecimal(Math.PI)).divide(new BigDecimal(180.0), precision,
-                RoundingMode.DOWN);
+                RoundingMode.HALF_UP);
         
-        System.out.println("Latitude Radians: " + latitudeRadians);
+        //System.out.println("Latitude Radians: " + latitudeRadians);
 
         int zoneNumber = calcZoneNumber(longitude);
         
         BigDecimal zoneCentralMeridian = calcZoneCentralMeridian(zoneNumber);
         
         BigDecimal changeInLongitudeDegree = (longitude.subtract(zoneCentralMeridian)
-                ).abs().setScale(precision, RoundingMode.DOWN);
-        System.out.println("Change in Long Degree: " + changeInLongitudeDegree);
+                ).abs().setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("Change in Long Degree: " + changeInLongitudeDegree);
         
         BigDecimal changeInLongitudeRadians = (changeInLongitudeDegree.multiply(
                 new BigDecimal(Math.PI))).divide(new BigDecimal(180), precision, 
-                RoundingMode.DOWN);
-        System.out.println("Change In Longitude Radians: " + changeInLongitudeRadians);
+                RoundingMode.HALF_UP);
+        //System.out.println("Change In Longitude Radians: " + changeInLongitudeRadians);
         
 
         BigDecimal conformalLatitude = calcConformalLatitude(eccentricity, 
-                latitudeRadians).setScale(precision, RoundingMode.DOWN);
-        System.out.println("Conformal Latitude: " + conformalLatitude);
+                latitudeRadians).setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("Conformal Latitude: " + conformalLatitude);
         
         BigDecimal tauPrime = (new BigDecimal(Math.tan(conformalLatitude.
-                doubleValue()))).setScale(precision, RoundingMode.DOWN);
-        System.out.println("Tau Prime: " + tauPrime);
+                doubleValue()))).setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("Tau Prime: " + tauPrime);
         
         BigDecimal xiPrimeNorth = calcXiPrimeNorth(changeInLongitudeRadians, 
-                tauPrime).setScale(precision, RoundingMode.DOWN);
-        System.out.println("xi Prime North: " + xiPrimeNorth);
+                tauPrime).setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("xi Prime North: " + xiPrimeNorth);
         
         BigDecimal etaPrimeEast = calcEtaPrimeEast(changeInLongitudeRadians, 
-                tauPrime).setScale(precision, RoundingMode.DOWN);
-        System.out.println("Eta Prime East: " + etaPrimeEast);
+                tauPrime).setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("Eta Prime East: " + etaPrimeEast);
         
         BigDecimal[] alphaSeries = {
-            KrugerSeries.alpha1(flattening3D).setScale(precision, RoundingMode.DOWN),
-            KrugerSeries.alpha2(flattening3D.setScale(precision, RoundingMode.DOWN)), 
-            KrugerSeries.alpha3(flattening3D).setScale(precision, RoundingMode.DOWN),
-            KrugerSeries.alpha4(flattening3D).setScale(precision, RoundingMode.DOWN), 
-            KrugerSeries.alpha5(flattening3D).setScale(precision, RoundingMode.DOWN),
-            KrugerSeries.alpha6(flattening3D).setScale(precision, RoundingMode.DOWN), 
-            KrugerSeries.alpha7(flattening3D).setScale(precision, RoundingMode.DOWN)};
+            KrugerSeries.alpha1(flattening3D).setScale(precision, RoundingMode.HALF_UP),
+            KrugerSeries.alpha2(flattening3D.setScale(precision, RoundingMode.HALF_UP)), 
+            KrugerSeries.alpha3(flattening3D).setScale(precision, RoundingMode.HALF_UP),
+            KrugerSeries.alpha4(flattening3D).setScale(precision, RoundingMode.HALF_UP), 
+            KrugerSeries.alpha5(flattening3D).setScale(precision, RoundingMode.HALF_UP),
+            KrugerSeries.alpha6(flattening3D).setScale(precision, RoundingMode.HALF_UP), 
+            KrugerSeries.alpha7(flattening3D).setScale(precision, RoundingMode.HALF_UP)};
         
 
         BigDecimal xiNorth = calcXiNorth(xiPrimeNorth, etaPrimeEast, 
-                alphaSeries).setScale(precision, RoundingMode.DOWN);
-        System.out.println("xi North: " + xiNorth);
+                alphaSeries).setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("xi North: " + xiNorth);
         
         BigDecimal etaEast = calcEtaEast(xiPrimeNorth, etaPrimeEast, 
-                alphaSeries).setScale(precision, RoundingMode.DOWN);
-        System.out.println("Eta East: " + etaEast);
+                alphaSeries).setScale(precision, RoundingMode.HALF_UP);
+        //System.out.println("Eta East: " + etaEast);
         
         BigDecimal easting = calcEasting(meridianRadius, etaEast, longitude, 
-                zoneCentralMeridian).setScale(precision, RoundingMode.DOWN);
+                zoneCentralMeridian).setScale(precision, RoundingMode.HALF_UP);
         BigDecimal northing = calcNorthing(meridianRadius, xiNorth, 
-                latitude).setScale(precision, RoundingMode.DOWN);
+                latitude).setScale(precision, RoundingMode.HALF_UP);
         
         char zoneLetter = calcZoneLetter(latitude);
         char hemisphere = calcHemisphere(latitude);
@@ -139,13 +139,13 @@ public class LatLongToUTM {
             
             BigDecimal oneEighty = new BigDecimal(180);
             zoneNumber = ((oneEighty.add(longitude)).divide(six, precision, 
-                    RoundingMode.DOWN)).intValue()+ 1;
+                    RoundingMode.HALF_UP)).intValue()+ 1;
         }
             
         else {
             
             BigDecimal thirtyOne = new BigDecimal(31);
-            zoneNumber = ((longitude.divide(six, precision, RoundingMode.DOWN)).abs().add(
+            zoneNumber = ((longitude.divide(six, precision, RoundingMode.HALF_UP)).abs().add(
                     thirtyOne)).intValue();
         }
         
@@ -165,23 +165,17 @@ public class LatLongToUTM {
         
         BigDecimal conformalLatitude;
         
-        double tanOfLatRad = Math.tan(latitudeRadians.doubleValue());
+        double latRadDouble = latitudeRadians.doubleValue();
+        double eccDouble = eccentricity.doubleValue();
+        double confLatDouble;
         
-        Asinh aSinhOfTanLatRad = new Asinh();
-        double arcSinhOfTanLatRad = aSinhOfTanLatRad.value(tanOfLatRad);
+        Atanh atanh = new Atanh();
+        Asinh asinh = new Asinh();
         
-        double sinhOfArcSinh = Math.sinh(arcSinhOfTanLatRad);
-        double sinOfLatRad = Math.sin(latitudeRadians.doubleValue());
-        double eccTimesSin = (eccentricity.doubleValue()) * sinOfLatRad;
+        confLatDouble = Math.atan(Math.sinh(asinh.value( Math.tan(latRadDouble)) -
+            eccDouble * atanh.value(eccDouble * Math.sin(latRadDouble))));
         
-        Atanh aTanhOfMult = new Atanh();
-        double arcTanhOfMult = aTanhOfMult.value(eccTimesSin);
-        
-        
-        double eccTimesArcTanh = (eccentricity.doubleValue()) * arcTanhOfMult;
-        double subtraction = sinhOfArcSinh - eccTimesArcTanh;
-        
-        conformalLatitude = new BigDecimal(Math.atan(subtraction));
+        conformalLatitude = new BigDecimal(confLatDouble);
         
         return conformalLatitude;
         

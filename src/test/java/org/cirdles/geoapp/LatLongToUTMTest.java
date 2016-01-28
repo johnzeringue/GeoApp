@@ -55,11 +55,14 @@ public class LatLongToUTMTest {
         int expEasting = 465005;
         int expNorthing = 9329005;
         
+        System.out.println("Easting: " + eastingResult);
+        System.out.println("Northing: " + northingResult);
+        
         assertEquals(expEasting, eastingResult);
         assertEquals(expNorthing, northingResult);
         
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        //fail("The test case is a prototype.");
     }
 
     /**
@@ -77,6 +80,9 @@ public class LatLongToUTMTest {
         int eastingResult2 = resultUTM2.getEasting().intValue();
         int northingResult2 = resultUTM2.getNorthing().intValue();
         
+        System.out.println("Easting: " + eastingResult2);
+        System.out.println("Northing: " + northingResult2);
+        
         int expEasting2 = 166021;
         int expNorthing2 = 0;
         
@@ -84,7 +90,91 @@ public class LatLongToUTMTest {
         assertEquals(expNorthing2, northingResult2);
         
         // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        //fail("The test case is a prototype.");
+    }
+    
+    /**
+     * Test of convert method, of class LatLongToUTM.
+     */
+    @org.junit.Test
+    public void testConvert_3args_3() {
+        System.out.println("convert");
+        double latitude = -21.0;
+        double longitude = 17.0;
+        String datumName2 = "NAD83";
+        
+        UTM resultUTM2 = LatLongToUTM.convert(latitude, longitude, datumName2);
+        
+        int eastingResult = resultUTM2.getEasting().intValue();
+        int northingResult = resultUTM2.getNorthing().intValue();
+        
+        System.out.println("Easting: " + eastingResult);
+        System.out.println("Northing: " + northingResult);
+        
+        int expEasting = 707889;
+        int expNorthing = 7676551;
+        
+        assertEquals(expEasting, eastingResult);
+        assertEquals(expNorthing, northingResult);
+        
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
+    
+    /**
+     * Test of convert method, of class LatLongToUTM.
+     */
+    @org.junit.Test
+    public void testConvert_3args_4() {
+        System.out.println("convert");
+        BigDecimal latitude = new BigDecimal(32.0);
+        BigDecimal longitude = new BigDecimal(-122.0);
+        String datumName2 = "WGS84";
+        
+        UTM resultUTM2 = LatLongToUTM.convert(latitude, longitude, datumName2);
+        
+        int eastingResult = resultUTM2.getEasting().intValue();
+        int northingResult = resultUTM2.getNorthing().intValue();
+        
+        System.out.println("Easting: " + eastingResult);
+        System.out.println("Northing: " + northingResult);
+        
+        int expEasting = 594457;
+        int expNorthing = 3540872;
+        
+        assertEquals(expEasting, eastingResult);
+        assertEquals(expNorthing, northingResult);
+        
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
+    }
+    
+    /**
+     * Test of convert method, of class LatLongToUTM.
+     */
+    @org.junit.Test
+    public void testConvert_3args_5() {
+        System.out.println("convert");
+        double latitude = -27.11667;
+        double longitude = -109.36667;
+        String datumName2 = "WGS84";
+        
+        UTM resultUTM2 = LatLongToUTM.convert(latitude, longitude, datumName2);
+        
+        int eastingResult = resultUTM2.getEasting().intValue();
+        int northingResult = resultUTM2.getNorthing().intValue();
+        
+        System.out.println("Easting: " + eastingResult);
+        System.out.println("Northing: " + northingResult);
+        
+        int expEasting = 661896;
+        int expNorthing = 6999590;
+        
+        assertEquals(expEasting, eastingResult);
+        assertEquals(expNorthing, northingResult);
+        
+        // TODO review the generated test code and remove the default call to fail.
+        //fail("The test case is a prototype.");
     }
 
     
