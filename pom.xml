@@ -3,7 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.cirdles</groupId>
     <artifactId>GeoApp</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <name>GeoApp</name>
+    <version>0.1.0</version>
+    <description>Geo location datum converter</description>
+    <url>https://cirdles.org</url>
+    <inceptionYear>2015</inceptionYear>
     <packaging>jar</packaging>
     <repositories>
 	<repository>
