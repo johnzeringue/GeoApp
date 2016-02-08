@@ -50,11 +50,31 @@ public class LatLongToUTM {
     private static final BigDecimal one = new BigDecimal(1);
     private static final int precision = 10;
     
+    /**
+     * 
+     * @param latitude
+     * @param longitude
+     * @param datumName
+     * @return UTM
+     * 
+     * Converts double latitude longitude to BigDecimal and converts it to UTM
+     */
+    
     public static UTM convert(double latitude, double longitude, String datumName) {
         
         return convert(new BigDecimal(latitude), new BigDecimal(longitude), datumName);
         
     }     
+    
+    /**
+     * 
+     * @param latitude
+     * @param longitude
+     * @param datumName
+     * @return UTM
+     * 
+     * Converts BigDecimal latitude longitude to UTM 
+     */
     public static UTM convert(BigDecimal latitude, BigDecimal longitude, String datumName){
         
         DatumEnum datumEnum = DatumEnum.valueOf(datumName);
@@ -66,37 +86,29 @@ public class LatLongToUTM {
                 new BigDecimal(Math.PI)).divide(new BigDecimal(180.0), precision,
                 RoundingMode.HALF_UP);
         
-        //System.out.println("Latitude Radians: " + latitudeRadians);
-
         int zoneNumber = calcZoneNumber(longitude);
         
         BigDecimal zoneCentralMeridian = calcZoneCentralMeridian(zoneNumber);
         
         BigDecimal changeInLongitudeDegree = (longitude.subtract(zoneCentralMeridian)
                 ).abs().setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("Change in Long Degree: " + changeInLongitudeDegree);
         
         BigDecimal changeInLongitudeRadians = (changeInLongitudeDegree.multiply(
                 new BigDecimal(Math.PI))).divide(new BigDecimal(180), precision, 
                 RoundingMode.HALF_UP);
-        //System.out.println("Change In Longitude Radians: " + changeInLongitudeRadians);
         
 
         BigDecimal conformalLatitude = calcConformalLatitude(eccentricity, 
                 latitudeRadians).setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("Conformal Latitude: " + conformalLatitude);
         
         BigDecimal tauPrime = (new BigDecimal(Math.tan(conformalLatitude.
                 doubleValue()))).setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("Tau Prime: " + tauPrime);
         
         BigDecimal xiPrimeNorth = calcXiPrimeNorth(changeInLongitudeRadians, 
                 tauPrime).setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("xi Prime North: " + xiPrimeNorth);
         
         BigDecimal etaPrimeEast = calcEtaPrimeEast(changeInLongitudeRadians, 
                 tauPrime).setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("Eta Prime East: " + etaPrimeEast);
         
         BigDecimal[] alphaSeries = {
             KrugerSeries.alpha1(flattening3D).setScale(precision, RoundingMode.HALF_UP),
@@ -110,11 +122,9 @@ public class LatLongToUTM {
 
         BigDecimal xiNorth = calcXiNorth(xiPrimeNorth, etaPrimeEast, 
                 alphaSeries).setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("xi North: " + xiNorth);
         
         BigDecimal etaEast = calcEtaEast(xiPrimeNorth, etaPrimeEast, 
                 alphaSeries).setScale(precision, RoundingMode.HALF_UP);
-        //System.out.println("Eta East: " + etaEast);
         
         BigDecimal easting = calcEasting(meridianRadius, etaEast, longitude, 
                 zoneCentralMeridian).setScale(precision, RoundingMode.HALF_UP);
@@ -130,7 +140,13 @@ public class LatLongToUTM {
     
 
     
-    
+    /**
+     * 
+     * @param longitude
+     * @return int zone number
+     * 
+     * Returns the zone number that the longitude corresponds to on the UTM map
+     */
     private static int calcZoneNumber(BigDecimal longitude) {
         int zoneNumber;
         BigDecimal six = new BigDecimal(6);
@@ -153,6 +169,13 @@ public class LatLongToUTM {
         
     }
     
+    /**
+     * 
+     * @param zoneNumber
+     * @return BigDecimal central meridian
+     * 
+     * Central meridian is the center of the zone on the UTM map
+     */
     private static BigDecimal calcZoneCentralMeridian(int zoneNumber) {
         
         BigDecimal zoneCentralMeridian = new BigDecimal(zoneNumber * 6 - 183);
@@ -160,7 +183,20 @@ public class LatLongToUTM {
     
     }
     
-    
+    /**
+     * 
+     * @param eccentricity
+     * @param latitudeRadians
+     * @return BigDecimal conformal latitude
+     * 
+     * Eccentricity helps define the shape of the ellipsoidal representation of
+     * the earth
+     * 
+     * Conformal latitude gives an angle-preserving (conformal) transformation 
+     * to the sphere. It defines a transformation from the ellipsoid to a sphere 
+     * of arbitrary radius such that the angle of intersection between any two 
+     * lines on the ellipsoid is the same as the corresponding angle on the sphere.
+     */
     private static BigDecimal calcConformalLatitude(BigDecimal eccentricity, BigDecimal latitudeRadians) {
         
         BigDecimal conformalLatitude;
@@ -182,8 +218,16 @@ public class LatLongToUTM {
     }
     
 
-    
-    //Need xi north and east to find easting and northing
+    /**
+     * 
+     * @param changeInLongitudeRadians
+     * @param tauPrime
+     * @return BigDecimal xi prime
+     * 
+     * tau refers to the torsion of a curve
+     * 
+     * xi refers to the north-south direction
+     */
     private static BigDecimal calcXiPrimeNorth(BigDecimal changeInLongitudeRadians,
             BigDecimal tauPrime) {
         
@@ -194,6 +238,14 @@ public class LatLongToUTM {
         return xiPrime;
     }
     
+    /**
+     * 
+     * @param changeInLongitudeRadians
+     * @param tauPrime
+     * @return BigDecimal eta prime
+     * 
+     * eta refers to the east-west direction
+     */
     private static BigDecimal calcEtaPrimeEast(BigDecimal changeInLongitudeRadians, 
             BigDecimal tauPrime) {
         
@@ -215,7 +267,18 @@ public class LatLongToUTM {
         
     }
     
-
+    
+    /**
+     * 
+     * @param xiPrimeNorth
+     * @param etaPrimeEast
+     * @param alphaSeries
+     * @return BigDecimal xi
+     * 
+     * alpha series based on Krüger series, which entails mapping the ellipsoid 
+     * to the conformal sphere.
+     * 
+     */
     private static BigDecimal calcXiNorth(BigDecimal xiPrimeNorth,
             BigDecimal etaPrimeEast, BigDecimal[] alphaSeries) {
 
@@ -247,7 +310,13 @@ public class LatLongToUTM {
         
     }
     
-    
+    /**
+     * 
+     * @param xiPrimeNorth
+     * @param etaPrimeEast
+     * @param alphaSeries
+     * @return BigDecimal eta
+     */
     private static BigDecimal calcEtaEast(BigDecimal xiPrimeNorth,BigDecimal 
             etaPrimeEast, BigDecimal[] alphaSeries) {
         
@@ -291,6 +360,15 @@ public class LatLongToUTM {
         
     }
     
+    /**
+     * 
+     * @param latitude
+     * @return char zone letter
+     * 
+     * Latitude corresponds to a zone letter on the UTM map. Match up zone letter
+     * and zone number on UTM map to find the specific zone.
+     * 
+     */
     private static char calcZoneLetter(BigDecimal latitude) {
         String letters = "CDEFGHJKLMNPQRSTUVWXX";
         double lat = latitude.doubleValue();
@@ -303,7 +381,20 @@ public class LatLongToUTM {
         
     } 
 
-    
+    /**
+     * 
+     * @param meridianRadius
+     * @param etaEast
+     * @param longitude
+     * @param centralMeridian
+     * @return BigDecimal easting
+     * 
+     * The meridian radius is based on the lines that run north-south on a map.
+     * 
+     * UTM easting coordinates are referenced to the center line of the zone 
+     * known as the central meridian. The central meridian is assigned an 
+     * easting value of 500,000 meters East.
+     */
     private static BigDecimal calcEasting(BigDecimal meridianRadius, BigDecimal
             etaEast, BigDecimal longitude, BigDecimal centralMeridian) { 
         
@@ -319,6 +410,19 @@ public class LatLongToUTM {
         return easting;
     }
     
+    /**
+     * 
+     * @param meridianRadius
+     * @param xiNorth
+     * @param latitude
+     * @return BigDecimal northing
+     * 
+     * UTM northing coordinates are measured relative to the equator. For 
+     * locations north of the equator the equator is assigned the northing 
+     * value of 0 meters North. To avoid negative numbers, locations south of 
+     * the equator are made with the equator assigned a value of 10,000,000 
+     * meters North.
+     */
     private static BigDecimal calcNorthing(BigDecimal meridianRadius, BigDecimal 
             xiNorth, BigDecimal latitude) {
         
@@ -332,6 +436,14 @@ public class LatLongToUTM {
         
     }
     
+    /**
+     * 
+     * @param latitude
+     * @return char Hemisphere
+     * 
+     * Returns whether the latitude indicates being in the southern or northern
+     * hemisphere
+     */
     private static char calcHemisphere(BigDecimal latitude) {
         
         char hemisphere = 'N';
