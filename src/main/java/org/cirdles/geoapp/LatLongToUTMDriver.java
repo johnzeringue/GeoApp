@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 /**
  *
- * @author evc1996
+ * @author Elaina Cole
  */
 public class LatLongToUTMDriver {
     

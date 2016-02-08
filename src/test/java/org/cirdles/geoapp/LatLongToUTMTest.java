@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 /**
  *
- * @author evc1996
+ * @author Elaina Cole
  */
 public class LatLongToUTMTest {
     
