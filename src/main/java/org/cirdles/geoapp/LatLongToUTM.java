@@ -239,12 +239,13 @@ public class LatLongToUTM {
     }
     
     /**
+     * eta refers to the east-west direction
      * 
      * @param changeInLongitudeRadians
      * @param tauPrime
      * @return BigDecimal eta prime
      * 
-     * eta refers to the east-west direction
+     * 
      */
     private static BigDecimal calcEtaPrimeEast(BigDecimal changeInLongitudeRadians, 
             BigDecimal tauPrime) {
