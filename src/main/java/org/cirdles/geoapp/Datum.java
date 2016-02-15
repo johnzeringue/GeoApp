@@ -30,7 +30,7 @@ import java.util.List;
 
 
 
-public enum DatumEnum {
+public enum Datum {
     
     //datum name, equatorial radius, polar radius, flattening 3D, eccentricity, 
     //  meridian radius, alpha series
@@ -128,7 +128,7 @@ public enum DatumEnum {
     private double eccentricity;
     private double[] alphaSeries;
     
-    private DatumEnum(String datum, double equatorialRadius, double polarRadius,
+    private Datum(String datum, double equatorialRadius, double polarRadius,
             double flattening3D, double eccentricity, double meridianRadius, 
             double[] alphaSeries){
         
@@ -164,6 +164,10 @@ public enum DatumEnum {
     
     public double getEccentricity() {
         return eccentricity;
+    }
+    
+    public double[] getAlphaSeries(){
+        return alphaSeries;
     }
     
 
