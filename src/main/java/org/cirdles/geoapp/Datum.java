@@ -170,6 +170,5 @@ public enum Datum {
         return alphaSeries;
     }
     
-
     
 }
