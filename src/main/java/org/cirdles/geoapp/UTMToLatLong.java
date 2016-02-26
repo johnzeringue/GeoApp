@@ -68,6 +68,8 @@ public class UTMToLatLong {
         
         char hemisphere = utm.getHemisphere();
         
+        double zoneCentralMeridian = utm.getZoneNumber() * 6 - 183;
+        
         BigDecimal meridianRadius = new BigDecimal(datumInformation.getMeridianRadius());
         
         BigDecimal northing = utm.getNorthing();
@@ -222,5 +224,83 @@ public class UTMToLatLong {
         return sigma;
         
     }
+    
+    
+    private static BigDecimal functionOfTau(BigDecimal currentTau, BigDecimal
+        currentSigma, BigDecimal originalTau) {
+        
+        BigDecimal funcOfTau = originalTau.multiply(new BigDecimal(Math.sqrt(1 + 
+            currentSigma.pow(2).doubleValue()))).subtract(currentSigma.multiply(
+            new BigDecimal(Math.sqrt(1 + currentTau.pow(2).doubleValue())))).subtract(originalTau);
+        
+        return funcOfTau;
+        
+    }
+    
+
+    
+    private static BigDecimal changeInTau(BigDecimal eccentricity, BigDecimal 
+        currentTau, BigDecimal currentSigma) {
+        
+        BigDecimal changeInTau = ((new BigDecimal(Math.sqrt((1 + currentSigma.pow(2).doubleValue()) * 
+            (1 + currentTau.pow(2).doubleValue())))).subtract(
+            currentSigma.multiply(currentTau))).multiply(new BigDecimal(1 - 
+            eccentricity.pow(2).doubleValue())).multiply(new BigDecimal(Math.sqrt(
+            1 + currentTau.pow(2).doubleValue()))).divide(ONE.add(
+            ONE.subtract(eccentricity.pow(2))).multiply(currentTau.pow(2)));
+        
+        
+        return changeInTau;
+        
+    }
+    
+    
+    private static BigDecimal approximateTau(BigDecimal currentTau, BigDecimal
+        funcOfTau, BigDecimal changeInTau) {
+        
+        BigDecimal newTau = currentTau.subtract(funcOfTau.divide(changeInTau));
+        
+        return newTau;
+        
+    }
+    
+    private static BigDecimal calcLatitude(BigDecimal eccentricity, 
+        BigDecimal sigma, BigDecimal currentTau, int numOfApproximations, 
+        BigDecimal originalTau) {
+        
+        BigDecimal funcOfTau = functionOfTau(currentTau, sigma, originalTau);
+        BigDecimal changeInTau = changeInTau(eccentricity, currentTau, sigma);
+        BigDecimal nextTau = approximateTau(currentTau, funcOfTau, changeInTau);
+        BigDecimal nextSigma = calcSigma(eccentricity, nextTau);
+        
+        if (numOfApproximations != 0) {
+            
+            numOfApproximations -= 1;
+            
+            return calcLatitude(eccentricity, nextSigma, nextTau,
+                numOfApproximations, originalTau);
+            
+        }
+        
+        BigDecimal latitude = (new BigDecimal(Math.atan(currentTau.doubleValue())))
+           .multiply(new BigDecimal(180.0 / Math.PI));
+        
+        return latitude;
+        
+    }
+    
+    private static BigDecimal calcLongitude(BigDecimal approximatedLat, 
+        double zoneCentralMeridian, BigDecimal etaPrime, BigDecimal xiPrime) {
+        
+        double longitudeRadians = Math.atan(Math.sinh(etaPrime.doubleValue())/
+            Math.cos(xiPrime.doubleValue()));
+        
+        BigDecimal changeInLongitude = new BigDecimal(longitudeRadians*180.0/Math.PI);
+        
+        BigDecimal longitude = new BigDecimal(zoneCentralMeridian).add(changeInLongitude);
+        
+        return longitude;
+    }
+
     
 }
