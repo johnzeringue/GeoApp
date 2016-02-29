@@ -20,6 +20,7 @@
 package org.cirdles.geoapp;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 /**
  *
@@ -142,7 +143,7 @@ public class KrugerSeries {
     
     public static BigDecimal beta2(BigDecimal flattening3D) {
         
-        BigDecimal beta2 = (new BigDecimal(1.0/48/0)).multiply(flattening3D.pow(2)).add(
+        BigDecimal beta2 = (new BigDecimal(1.0/48.0, MathContext.DECIMAL128)).multiply(flattening3D.pow(2)).add(
             new BigDecimal(1.0/15.0).multiply(flattening3D.pow(3))).subtract(
             new BigDecimal(437.0-1440.0).multiply(flattening3D.pow(4))).add(
             new BigDecimal(46.0/105.0).multiply(flattening3D.pow(5))).subtract(
